@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+*.egg-info/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Streamlit
+.streamlit/secrets.toml
+.streamlit/__pycache__
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Data/Models (optional - uncomment if needed)
+# model/*.pkl
+# *.pkl
+# *.h5
+
+# OS
+.DS_Store
+Thumbs.db
