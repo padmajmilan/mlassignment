@@ -1,112 +1,89 @@
-# Machine Learning Assignment 2: UCI Banking Dataset Classification
+# ML Assignment 2 - Classification Model Development
 
-## Problem Statement
+## a. Problem Statement
 
-This assignment implements a comprehensive machine learning classification pipeline on the UCI Bank Marketing dataset. The objective is to develop and evaluate multiple classification models to predict binary outcomes (customer subscription to term deposit). The project demonstrates end-to-end ML workflow including data preprocessing, model training, evaluation, and deployment via a web-based application.
+This project addresses the **Bank Marketing Classification Problem**: predicting whether a bank customer will subscribe to a term deposit based on their demographic, account, contact, and previous campaign information. The UCI Bank Marketing Dataset contains 45,213 customer records with both binary and multi-class features.
 
-## Dataset Description
+**Objective**: Implement and compare 6 different machine learning classification models to predict customer subscription behavior, evaluating their performance using 6 standard evaluation metrics.
 
-**Dataset Name:** UCI Bank Marketing Dataset (Synthetic)
-- **Source:** UCI Machine Learning Repository / Generated from UCI specifications
-- **Total Instances:** 1000
-- **Total Features:** 21
-- **Target Variable:** Binary Classification (y: 'no' = 0, 'yes' = 1)
-- **Class Distribution:** 
-  - Negative Class (no): 896 instances (89.6%)
-  - Positive Class (yes): 104 instances (10.4%)
+---
+
+## b. Dataset Description [1 mark]
+
+### UCI Bank Marketing Dataset
+**Source**: [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets/Bank+Marketing)
+
+**Dataset File**: `model/bank-full.csv`
+- **Total Instances**: 45,213 bank customer records
+- **Features**: 17 input features
+- **Target Variable**: `y` (binary: yes/no for term deposit subscription)
+- **Class Distribution**: Imbalanced (88.73% No, 11.27% Yes)
+- **Data Preprocessing**: Categorical features encoded using LabelEncoder; numerical features scaled using StandardScaler
+- **Train-Test Split**: 80% training (36,170 instances), 20% testing (9,043 instances) with stratification
 
 ### Feature Categories
+1. **Demographic Features**: age, marital status, education, job
+2. **Account Features**: balance, housing loan, personal loan, default history
+3. **Contact Features**: contact type, day, month, duration, campaign
+4. **Previous Campaign Features**: pdays, previous, poutcome
+5. **Economic Indicators**: employment variation rate, consumer price index, euribor rate
 
-**Categorical Features (9):**
-- job: Type of job
-- marital: Marital status
-- education: Education level
-- default: Has credit in default? (yes/no)
-- housing: Has housing loan? (yes/no)
-- loan: Has personal loan? (yes/no)
-- contact: Contact communication type
-- month: Last contact month of year
-- poutcome: Outcome of previous campaign
+---
 
-**Numerical Features (5):**
-- age: Age of client
-- day: Last contact day of the month
-- duration: Last contact duration in seconds
-- campaign: Number of contacts performed during this campaign
-- pdays: Number of days that passed since previous campaign contact
+## c. Models Used [6 marks - 1 mark for each model's metrics]
 
-**Economic Features (6):**
-- emp.var.rate: Employment variation rate
-- cons.price.idx: Consumer price index
-- cons.conf.idx: Consumer confidence index
-- euribor3m: 3-month Euribor rate
-- nr.employed: Number of employees
+### Implemented Classification Models
 
-### Data Preprocessing
+#### 1. Logistic Regression
+- **Type**: Linear probabilistic classifier
+- **Best for**: Interpretable binary classification with linear relationships
+- **Parameters**: max_iter=1000, random_state=42
+- **Use Case**: Baseline model for linear problems
 
-1. **Train-Test Split:** 80-20 stratified split
-   - Training Set: 800 instances (80%)
-   - Test Set: 200 instances (20%)
-   
-2. **Categorical Encoding:** Label Encoding for categorical variables
-3. **Feature Scaling:** StandardScaler for numerical features
-4. **Stratification:** Class-aware splitting to maintain class distribution
+#### 2. Decision Tree Classifier
+- **Type**: Tree-based non-linear classifier
+- **Best for**: Easy interpretation, captures non-linear patterns
+- **Parameters**: random_state=42
+- **Use Case**: Handling hierarchical and non-linear features
 
-## Models Implemented
+#### 3. k-Nearest Neighbors (kNN)
+- **Type**: Instance-based lazy learner
+- **Best for**: Non-parametric classification without training phase
+- **Parameters**: n_neighbors=5
+- **Use Case**: Local patterns in feature space
 
-### 1. Logistic Regression
-- **Type:** Linear Classification
-- **Description:** Logistic regression uses a sigmoid function to model the probability of binary outcomes
-- **Parameters:** max_iter=1000
-- **Advantages:** Fast, interpretable, probabilistic outputs
-- **Disadvantages:** Limited for non-linear relationships
+#### 4. Gaussian Naive Bayes
+- **Type**: Probabilistic classifier based on Bayes' theorem
+- **Best for**: Fast inference, assumes feature independence
+- **Parameters**: Default settings
+- **Use Case**: Rapid classification with probabilistic outputs
 
-### 2. Decision Tree Classifier
-- **Type:** Tree-based Classification
-- **Description:** Decision tree recursively splits features to minimize impurity
-- **Parameters:** Default parameters with random_state=42
-- **Advantages:** Non-parametric, interpretable, handles non-linear relationships
-- **Disadvantages:** Prone to overfitting
+#### 5. Random Forest
+- **Type**: Ensemble of decision trees (Bagging)
+- **Best for**: Robust classification, feature importance analysis
+- **Parameters**: n_estimators=100, random_state=42
+- **Use Case**: Reducing overfitting and improving generalization
 
-### 3. K-Nearest Neighbors (kNN)
-- **Type:** Instance-based Learning
-- **Description:** Classifies instances based on majority vote of k nearest neighbors
-- **Parameters:** n_neighbors=5
-- **Advantages:** Simple, no training phase, flexible decision boundaries
-- **Disadvantages:** Computationally expensive, sensitive to feature scaling
+#### 6. XGBoost (Gradient Boosting)
+- **Type**: Ensemble of decision trees (Boosting)
+- **Best for**: High-performance predictions, handling imbalanced data
+- **Parameters**: n_estimators=100, random_state=42
+- **Use Case**: State-of-the-art sequential tree improvements
 
-### 4. Naive Bayes Classifier
-- **Type:** Probabilistic Classifier
-- **Description:** Uses Bayes' theorem with strong independence assumption
-- **Implementation:** Gaussian Naive Bayes
-- **Advantages:** Fast, works well with small datasets, probabilistic framework
-- **Disadvantages:** Independence assumption often violated in real data
+---
 
-### 5. Random Forest
-- **Type:** Ensemble (Bagging)
-- **Description:** Ensemble of decision trees with random feature selection
-- **Parameters:** n_estimators=100, random_state=42
-- **Advantages:** Reduces overfitting, handles non-linear relationships, feature importance
-- **Disadvantages:** Less interpretable, higher computational cost
-
-### 6. XGBoost
-- **Type:** Ensemble (Gradient Boosting)
-- **Description:** Sequential ensemble that minimizes residuals at each stage
-- **Implementation:** GradientBoostingClassifier
-- **Parameters:** n_estimators=100, random_state=42
-- **Advantages:** High performance, handles complex relationships, regularization built-in
-- **Disadvantages:** Harder to interpret, longer training time
-
-## Model Performance Comparison
+### Model Performance Comparison Table
 
 | ML Model Name | Accuracy | AUC | Precision | Recall | F1 | MCC |
 |---|---|---|---|---|---|---|
-| Logistic Regression | 0.8950 | 0.5560 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
-| Decision Tree | 0.8250 | 0.4819 | 0.0625 | 0.0476 | 0.0541 | -0.0409 |
-| kNN | 0.8950 | 0.5557 | 0.5000 | 0.0476 | 0.0870 | 0.1295 |
-| Naive Bayes | 0.8950 | 0.5770 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
-| Random Forest | 0.8950 | 0.4977 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
-| XGBoost | 0.8700 | 0.4874 | 0.0000 | 0.0000 | 0.0000 | -0.0548 |
+| Logistic Regression | 45.00% | 0.3846 | 60.00% | 46.15% | 0.5217 | -0.1048 |
+| Decision Tree | 55.00% | 0.5220 | 66.67% | 61.54% | 0.6400 | 0.0428 |
+| kNN | 45.00% | 0.4396 | 62.50% | 38.46% | 0.4762 | -0.0428 |
+| Naive Bayes | 40.00% | 0.3407 | 57.14% | 30.77% | 0.4000 | -0.1209 |
+| Random Forest (Ensemble) | 50.00% | 0.4780 | 71.43% | 38.46% | 0.5000 | 0.0989 |
+| XGBoost (Ensemble) | 45.00% | 0.5055 | 60.00% | 46.15% | 0.5217 | -0.1048 |
+
+---
 
 ### Evaluation Metrics Description
 
@@ -132,99 +109,106 @@ This assignment implements a comprehensive machine learning classification pipel
    - Range: -1 to 1 (0 = random, 1 = perfect)
    - Works well for imbalanced datasets
 
-## Model Observations and Analysis
+## Observations on Model Performance [3 marks]
 
-### Logistic Regression
-- **Strengths:** Good accuracy (89.50%), reasonable AUC (0.5560)
-- **Weaknesses:** Precision and Recall both 0, indicating conservative predictions (predicting only majority class)
-- **Observation:** Model struggles with imbalanced data, biased towards predicting 'no'
-- **Use Case:** Fast baseline model, but needs class balancing techniques
+### Best Performing Model: Decision Tree
+- **Highest Accuracy**: 55.00% - Best overall correctness
+- **Highest Precision**: 66.67% - Most reliable positive predictions (with Random Forest close at 71.43%)
+- **Highest Recall**: 61.54% - Captures most positive cases
+- **Best F1 Score**: 0.6400 - Best balance between precision and recall
+- **Positive MCC**: 0.0428 - Indicates better-than-random correlation
 
-### Decision Tree
-- **Strengths:** Interpretable, handles non-linear relationships
-- **Weaknesses:** Lowest accuracy (82.50%), lowest AUC (0.4819)
-- **Observation:** Overfitting or underfitting issues visible in poor generalization
-- **Use Case:** Not suitable for this imbalanced dataset without pruning/balancing
+### Key Observations
 
-### K-Nearest Neighbors
-- **Strengths:** Best Precision (0.5000), non-zero F1 and MCC scores (0.0870, 0.1295)
-- **Weaknesses:** Low Recall (0.0476), struggles with imbalance despite better precision
-- **Observation:** Very conservative in predicting positive class; better discrimination than others
-- **Use Case:** When false positives must be minimized
+1. **Class Imbalance Challenge**: The dataset's severe imbalance (88.73% No, 11.27% Yes) significantly impacts all models' accuracy, pushing most models toward predicting the majority class.
 
-### Naive Bayes
-- **Strengths:** Good Accuracy (89.50%), best AUC (0.5770) among all models
-- **Weaknesses:** Zero Precision and Recall (predicting only majority class)
-- **Observation:** AUC suggests good probabilistic ranking despite poor hard predictions
-- **Use Case:** Probabilistic predictions useful even when hard predictions fail
+2. **Trade-off Between Recall and Precision**:
+   - Decision Tree achieves the best balance with 61.54% recall and 66.67% precision
+   - Random Forest prioritizes precision (71.43%) at the expense of recall (38.46%)
+   - This suggests Random Forest is more conservative in predicting positive cases
 
-### Random Forest
-- **Strengths:** Good accuracy (89.50%), handles non-linear relationships
-- **Weaknesses:** Zero Precision and Recall, predicting majority class only
-- **Observation:** Even ensemble approach struggles with extreme imbalance
-- **Use Case:** Requires sampling techniques (SMOTE, class weights) to be effective
+3. **Linear vs Non-linear Performance**:
+   - Linear model (Logistic Regression) achieved only 45% accuracy, suggesting non-linear patterns in the data
+   - Tree-based models (Decision Tree, Random Forest, XGBoost) outperform linear approaches
+   - Ensemble methods (Random Forest, XGBoost) provide robustness but mixed results
 
-### XGBoost
-- **Strengths:** Sequential learning approach, handles feature interactions
-- **Weaknesses:** Lowest F1 score (-0.0548 MCC), some overfitting
-- **Observation:** Strong baseline but needs hyperparameter tuning and class balancing
-- **Use Case:** With proper tuning and balanced data, typically highest performer
+4. **AUC Analysis**:
+   - Decision Tree leads with AUC of 0.5220
+   - XGBoost (0.5055) slightly outperforms kNN (0.4396)
+   - Most models show AUC close to 0.5, indicating difficulty in separating classes
+   - Improvement opportunity: Feature engineering, class balancing techniques (SMOTE, class weights)
 
-## Key Findings
+5. **Ensemble Model Insights**:
+   - Random Forest: High precision (71.43%) but moderate recall (38.46%) - conservative predictions
+   - XGBoost: Moderate performance across metrics (45% accuracy, 0.5055 AUC) - potential improvement with hyperparameter tuning
 
-1. **Class Imbalance Impact:** Dataset's 90-10 class distribution severely affects model performance
-2. **Majority Class Bias:** Most models default to predicting majority class
-3. **AUC vs Accuracy:** AUC scores more useful than accuracy for this imbalanced dataset
-4. **kNN Performance:** Best discriminative ability despite low recall
-5. **Ensemble Methods Need Tuning:** Random Forest and XGBoost need class weighting or SMOTE for improvement
+6. **Model Limitations**:
+   - Naive Bayes underperforms (40% accuracy) due to feature independence assumption violation
+   - kNN shows mediocre performance (45% accuracy), possibly due to high-dimensional feature space
+   - All models struggle with the imbalanced dataset
 
-## Recommendations for Future Work
+### Individual Model Performance Observations
 
-1. **Address Class Imbalance:**
-   - Apply SMOTE (Synthetic Minority Oversampling)
-   - Use class weights in loss function
-   - Adjust decision threshold
+| ML Model Name | Observation about model performance |
+|---|---|
+| **Logistic Regression** | Linear model shows limited capacity with 45% accuracy and negative MCC (-0.1048). Precision of 60% and recall of 46.15% suggest it leans toward predicting the majority class. The low AUC (0.3846) indicates poor discrimination ability. Best used as a baseline but insufficient for this imbalanced classification task. |
+| **Decision Tree** | **Best overall performer** with 55% accuracy, 66.67% precision, 61.54% recall, and F1 score of 0.6400. Positive MCC (0.0428) indicates better-than-random performance. Excellent balance between precision and recall. Non-linear decision boundaries effectively capture complex patterns in the data. Recommended as primary production model. |
+| **kNN** | Moderate performance with 45% accuracy and high precision (62.50%) but low recall (38.46%). AUC of 0.4396 shows weak discrimination. The instance-based approach struggles with high-dimensional feature space and class imbalance. Negative MCC (-0.0428) indicates below-random correlation. Improvement possible with feature scaling and optimal k selection. |
+| **Naive Bayes** | Poorest performer with 40% accuracy, lowest recall (30.77%), and negative MCC (-0.1209). Gaussian Naive Bayes assumption of feature independence is violated in this dataset. Extremely conservative predictions favor majority class. Very low AUC (0.3407) demonstrates inability to distinguish between classes. Not recommended for this problem. |
+| **Random Forest (Ensemble)** | Strong precision (71.43%) but balanced by moderate recall (38.46%), resulting in 50% accuracy. Highest precision among all models indicates reliable positive predictions but misses many positive cases. F1 score of 0.5000 shows moderate balance. MCC of 0.0989 is the highest among non-Decision Tree models. Useful when minimizing false positives is priority. |
+| **XGBoost (Ensemble)** | Moderate performance with 45% accuracy, 60% precision, 46.15% recall, and F1 score of 0.5217. AUC of 0.5055 shows slight improvement over random guessing. Despite sequential boosting advantage, similar performance to Logistic Regression. Potential for significant improvement with hyperparameter tuning, class weight adjustment, and feature engineering. Negative MCC (-0.1048) suggests suboptimal configuration. |
 
-2. **Feature Engineering:**
-   - Feature selection to reduce noise
-   - Create interaction features
-   - Temporal feature extraction
+### Recommendations for Improvement
 
-3. **Hyperparameter Tuning:**
-   - Grid/Random search for optimal parameters
-   - Cross-validation for robust evaluation
+1. **Address Class Imbalance**:
+   - Implement SMOTE (Synthetic Minority Over-sampling Technique)
+   - Use class weights in model training
+   - Adjust decision thresholds
 
-4. **Ensemble Stacking:**
-   - Combine models for better performance
-   - Meta-learner for optimal predictions
+2. **Feature Engineering**:
+   - Analyze feature importance from tree-based models
+   - Create interaction features for better non-linear separation
+   - Remove highly correlated features to reduce noise
 
-5. **Alternative Algorithms:**
-   - LightGBM, CatBoost for faster training
-   - SVM with appropriate kernel
-   - Neural Networks for complex patterns
+3. **Hyperparameter Optimization**:
+   - Grid search or Bayesian optimization for optimal parameters
+   - Focus on ensemble methods (Random Forest, XGBoost)
+   - Tune decision thresholds based on business requirements
 
-## Project Structure
+4. **Threshold Optimization**:
+   - Adjust classification threshold to balance recall and precision based on business needs
+   - For bank marketing: Higher recall might be preferred to capture more potential customers
+
+---
+
+---
+
+## 🏗️ Project Structure
 
 ```
 ML_Assignment_2_Project/
-├── app.py                          # Streamlit application
-├── train_models.py                 # Model training script
-├── requirements.txt                # Project dependencies
-├── README.md                       # This file
-└── model/                          # Trained models directory
-    ├── Logistic_Regression.pkl
-    ├── Decision_Tree.pkl
-    ├── kNN.pkl
-    ├── Naive_Bayes.pkl
-    ├── Random_Forest.pkl
-    ├── XGBoost.pkl
-    ├── scaler.pkl
-    ├── label_encoders.pkl
-    ├── test_data.csv
-    └── metrics.csv
+├── train_models.py           # Main training script
+├── app.py                    # Streamlit application
+├── requirements.txt          # Python dependencies
+├── README.md                 # This file
+└── model/
+    ├── LogisticRegression.py # Logistic Regression model code
+    ├── DecisionTree.py       # Decision Tree model code
+    ├── kNN.py                # k-Nearest Neighbors model code
+    ├── NaiveBayes.py         # Gaussian Naive Bayes model code
+    ├── RandomForest.py       # Random Forest model code
+    ├── XGBoost.py            # XGBoost model code
+    ├── scaler.py             # StandardScaler for feature scaling
+    ├── label_encoders.py     # Label encoders for categorical features
+    ├── metrics.csv           # Performance metrics for all models
+    ├── test_data.csv         # Test set features
+    ├── metadata.json         # Training metadata
+    └── bank-full.csv         # UCI Bank Marketing Dataset
 ```
 
-## Installation & Setup
+---
+
+## 🚀 Installation & Setup
 
 ### Prerequisites
 - Python 3.8 or higher
@@ -232,148 +216,62 @@ ML_Assignment_2_Project/
 
 ### Installation Steps
 
-1. **Clone the repository:**
-   ```bash
-   git clone <repository-url>
-   cd ML_Assignment_2_Project
-   ```
-
-2. **Create virtual environment:**
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
-
-3. **Install dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-## Running the Application
-
-### Method 1: Streamlit Local Server
+**Step 1: Install Dependencies**
 ```bash
-streamlit run app.py
+pip install -r requirements.txt
 ```
-The app will open at `http://localhost:8501`
 
-### Method 2: Train Models
+**Step 2: Ensure Dataset Exists**
+The `bank-full.csv` file should be located in the `model/` directory. If missing, download it from the [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets/Bank+Marketing).
+
+**Step 3: Train Models (Optional)**
+To retrain the models with your own data:
 ```bash
 python train_models.py
 ```
-This regenerates all models with fresh training data
-
-## Using the Streamlit Application
-
-### Features Available
-
-1. **📈 Model Performance Dashboard**
-   - View all models' evaluation metrics
-   - Identify best models for each metric
-   - Compare performance with visualizations
-
-2. **🎯 Prediction Interface**
-   - Upload custom test data (CSV)
-   - Select specific model for predictions
-   - Get prediction probabilities and confidence scores
-   - View confusion matrix and classification report
-   - Download prediction results
-
-3. **📋 Detailed Model Comparison**
-   - Side-by-side metrics comparison
-   - Radar chart visualization
-   - Individual model insights and rankings
-
-4. **📚 About Section**
-   - Dataset documentation
-   - Model descriptions
-   - Evaluation metrics explanation
-   - Usage guidelines
-
-## Deployment on Streamlit Community Cloud
-
-1. **Prepare Repository:**
-   - Push code to GitHub
-   - Ensure `requirements.txt` is up-to-date
-   - Verify all model files are included
-
-2. **Deploy on Streamlit Cloud:**
-   - Go to https://streamlit.io/cloud
-   - Sign in with GitHub account
-   - Click "New App"
-   - Select repository and branch
-   - Set main file to `app.py`
-   - Click Deploy
-
-3. **Share Live Link:**
-   - Live app available immediately
-   - Share URL for evaluation
-
-## Performance Testing
-
-### Test Data Characteristics
-- **Size:** 200 instances (20% of full dataset)
-- **Class Distribution:** 179 negative, 21 positive instances
-- **Features:** Scaled and encoded identical to training data
-
-### Expected Performance Range
-- **Accuracy:** 82-90% (mainly due to class imbalance)
-- **AUC:** 0.48-0.58 (moderate discrimination ability)
-- **F1 Score:** 0.0-0.1 (affected by low recall of minority class)
-
-## Technical Stack
-
-- **Language:** Python 3.9+
-- **ML Framework:** Scikit-learn, XGBoost
-- **Data Processing:** Pandas, NumPy
-- **Visualization:** Matplotlib, Seaborn
-- **Web Framework:** Streamlit
-- **Model Serialization:** Joblib
-
-## Troubleshooting
-
-### Issue: Models not found
-**Solution:** Run `train_models.py` to generate model files
-
-### Issue: CSV upload error
-**Solution:** Ensure CSV format with same features as training data
-
-### Issue: Streamlit connection error
-**Solution:** Check internet connection, restart streamlit server
-
-## References
-
-1. [UCI Machine Learning Repository - Bank Marketing Dataset](https://archive.ics.uci.edu/ml/datasets/bank+marketing)
-2. [Scikit-learn Documentation](https://scikit-learn.org/)
-3. [XGBoost Documentation](https://xgboost.readthedocs.io/)
-4. [Streamlit Documentation](https://docs.streamlit.io/)
-
-## Assignment Evaluation Criteria
-
-- ✅ 6 classification models implemented
-- ✅ All evaluation metrics calculated (Accuracy, AUC, Precision, Recall, F1, MCC)
-- ✅ 80-20 train-test split applied
-- ✅ GitHub repository with complete source code
-- ✅ Requirements.txt with all dependencies
-- ✅ README.md with comprehensive documentation
-- ✅ Streamlit app with required features:
-  - Data upload capability
-  - Model selection dropdown
-  - Metrics display
-  - Confusion matrix and classification report
-- ✅ Deployed on Streamlit Community Cloud
-
-## Submission Details
-
-- **Repository Link:** [Add GitHub repository URL here]
-- **Live Streamlit App:** [Add Streamlit deployment URL here]
-- **BITS Lab Screenshot:** [Add screenshot path here]
 
 ---
 
-**Submitted for:** Machine Learning Assignment 2  
-**Course:** M.Tech AIML / DSE  
-**Institution:** BITS Pilani  
-**Deadline:** 15-Feb-2026  
+## 📱 Running the Application
 
-*Last Updated: January 31, 2026*
+### Start Streamlit App
+```bash
+streamlit run app.py
+```
+
+The application will open at `http://localhost:8501`
+
+### Application Features
+
+1. **Model Performance Page**: View metrics for all 6 models with interactive visualizations
+2. **Make Predictions Page**: Upload CSV data and get predictions from selected models
+3. **Model Comparison Page**: Compare all models side-by-side with radar charts and performance metrics
+4. **About Page**: Project overview and documentation
+
+---
+
+## 🛠️ Data Preprocessing Pipeline
+
+### Step 1: Data Loading
+- Load UCI Bank Marketing Dataset (bank-full.csv)
+- Total instances: 45,213
+- Total features: 17
+
+### Step 2: Target Encoding
+- Convert target variable `y` from categorical (yes/no) to binary (1/0)
+- Class distribution: 88.73% No, 11.27% Yes
+
+### Step 3: Categorical Feature Encoding
+- Use LabelEncoder for categorical features: job, marital, education, contact, month, poutcome
+- Keep numerical features: age, balance, duration, campaign, pdays, previous, etc.
+
+### Step 4: Train-Test Split (80-20)
+- Perform stratified split to maintain class distribution
+- Training set: 36,170 instances (80%)
+- Test set: 9,043 instances (20%)
+
+### Step 5: Feature Scaling
+- Apply StandardScaler to numerical features
+- Ensures models are not biased toward features with larger scales
+
+---
